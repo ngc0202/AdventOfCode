@@ -1,24 +1,33 @@
+#[macro_use]
+mod macros;
 
-use std::error::Error;
-use std::io::{self, BufReader};
-use std::fs::File;
-use std::path::PathBuf;
+use crate::prelude::*;
+use paste::paste;
 
-mod day4;
+// Main Method
+days!(4, 5*, 6, 7);
 
-pub type GenResult = Result<(), Box<dyn Error>>;
+mod prelude {
 
+    pub type GenError = Box<dyn Error>;
+    pub type GenResult = Result<(), GenError>;
 
-fn main() -> GenResult {
-    day4::run()?;
+    pub use std::io::{self, BufRead};
+    pub use std::iter;
+    pub use std::str::FromStr;
 
-    Ok(())
-}
+    pub use itertools::Itertools;
 
-pub fn load_input(day: u8) -> io::Result<BufReader<File>> {
-    let mut path = PathBuf::new();
-    path.push("inputs");
-    path.push(format!("input{:02}.txt", day));
-    println!("Reading from {}", path.display());
-    File::open(&path).map(BufReader::new)
+    use std::error::Error;
+    use std::fs::File;
+    use std::io::BufReader;
+    use std::path::PathBuf;
+
+    pub fn load_input(day: u8) -> io::Result<BufReader<File>> {
+        let mut path = PathBuf::new();
+        path.push("inputs");
+        path.push(format!("input{:02}.txt", day));
+        println!("Reading from {}", path.display());
+        File::open(&path).map(BufReader::new)
+    }
 }
