@@ -9,7 +9,7 @@ macro_rules! run_days {
 	($($n:tt $(* $(@$star:tt)?)?),+) => (
 		fn main() -> GenResult {
 			paste! {
-				$( $( println!(concat!("\nRunning day ", $n, ":")); [<day $n>]::run()?; $($star)?  )?  )+
+				$($(println!(concat!("\nRunning day ", $n, ":")); [<day $n>]::run()?; $($star)?)?)+
 			}
 			Ok(())
 		}
