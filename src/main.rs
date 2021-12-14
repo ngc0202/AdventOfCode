@@ -1,11 +1,14 @@
 #[macro_use]
 mod macros;
 
+#[allow(dead_code)]
+mod utils;
+
 use crate::prelude::*;
 use paste::paste;
 
 // Main Method
-days!(4, 5, 6, 7, /*9,*/ 10*);
+days!(4, 5, 6, 7, 9*, 10, 11);
 
 mod prelude {
 
