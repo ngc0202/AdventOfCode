@@ -1,14 +1,12 @@
-
 use crate::GenResult;
 
 use std::io::BufRead;
 use std::num::ParseIntError;
 
+use bitvec::access::BitSafeU32;
 use bitvec::prelude::*;
 use bitvec::ptr::Mut as BVMut;
-use bitvec::access::BitSafeU32;
 use itertools::Itertools;
-
 
 const DAY: u8 = 4;
 type Ubingo = u8;
@@ -17,19 +15,22 @@ type Ubingo = u8;
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct BingoBoard {
     numbers: [Ubingo; 25],
-    marks: BitArr!(for 25, in u32)
+    marks: BitArr!(for 25, in u32),
 }
 
 impl BingoBoard {
-
-    pub fn from_text<S: AsRef<str>, I: IntoIterator<Item=S>>(text_iter: I) -> Result<BingoBoard, ParseIntError> {
-        text_iter.into_iter()
-                 .flat_map(|l|
-                     l.as_ref()
-                     .split_whitespace()
-                     .map(|t| t.parse::<Ubingo>())
-                     .collect::<Vec<_>>()) // :(
-                 .collect()
+    pub fn from_text<S: AsRef<str>, I: IntoIterator<Item = S>>(
+        text_iter: I,
+    ) -> Result<BingoBoard, ParseIntError> {
+        text_iter
+            .into_iter()
+            .flat_map(|l| {
+                l.as_ref()
+                    .split_whitespace()
+                    .map(|t| t.parse::<Ubingo>())
+                    .collect::<Vec<_>>()
+            }) // :(
+            .collect()
     }
 
     // Returns whether any were marked
@@ -44,11 +45,13 @@ impl BingoBoard {
         found
     }
 
-    pub fn iter(&'_ self) -> impl Iterator<Item=(Ubingo, bool)> + '_ {
-        self.numbers.iter().copied().zip(self.marks.iter().by_val())
+    pub fn iter(&'_ self) -> impl Iterator<Item = (Ubingo, bool)> + '_ {
+        self.numbers.iter().copied().zip(self.marks.iter().by_vals())
     }
 
-    pub fn iter_mut(&'_ mut self) -> impl Iterator<Item=(&'_ mut Ubingo, BitRef<BVMut, LocalBits, BitSafeU32>)> {
+    pub fn iter_mut(
+        &'_ mut self,
+    ) -> impl Iterator<Item = (&'_ mut Ubingo, BitRef<BVMut, BitSafeU32, LocalBits>)> {
         self.numbers.iter_mut().zip(self.marks.iter_mut())
     }
 
@@ -73,16 +76,20 @@ impl BingoBoard {
 
     // Sum of all non-marked squares
     pub fn score(&self) -> u64 {
-        self.iter().filter_map(|(v, m)| (!m).then(|| u64::from(v))).sum()
+        self.iter()
+            .filter_map(|(v, m)| (!m).then(|| u64::from(v)))
+            .sum()
     }
 
     pub fn reset(&mut self) {
-        self.marks.set_all(false);
+        for mut bit in &mut self.marks {
+            *bit = false;
+        }
     }
 }
 
 impl FromIterator<Ubingo> for BingoBoard {
-    fn from_iter<I: IntoIterator<Item=Ubingo>>(numbers: I) -> Self {
+    fn from_iter<I: IntoIterator<Item = Ubingo>>(numbers: I) -> Self {
         let mut numarray = [0; 25];
         let mut counter = 0;
 
@@ -91,11 +98,15 @@ impl FromIterator<Ubingo> for BingoBoard {
             counter += 1;
         }
 
-        assert!(counter >= 25, "Only loaded {}/25 values for bingo card.", counter);
+        assert!(
+            counter >= 25,
+            "Only loaded {}/25 values for bingo card.",
+            counter
+        );
 
         BingoBoard {
             numbers: numarray,
-            marks: BitArray::zeroed()
+            marks: BitArray::ZERO,
         }
     }
 }
@@ -103,17 +114,18 @@ impl FromIterator<Ubingo> for BingoBoard {
 pub fn run() -> GenResult {
     let mut input = crate::load_input(DAY)?.lines();
 
-    let nums = input.next()
-                    .unwrap()?
-                    .split(',')
-                    .map(|n| n.parse())
-                    .collect::<Result<Vec<u8>, ParseIntError>>()?;
+    let nums = input
+        .next()
+        .unwrap()?
+        .split(',')
+        .map(|n| n.parse())
+        .collect::<Result<Vec<u8>, ParseIntError>>()?;
 
-    let mut boards = input.chunks(6)
-                      .into_iter()
-                      .map(|chk|
-                          BingoBoard::from_text(chk.map(Result::unwrap)))
-                      .collect::<Result<Vec<_>, ParseIntError>>()?;
+    let mut boards = input
+        .chunks(6)
+        .into_iter()
+        .map(|chk| BingoBoard::from_text(chk.map(Result::unwrap)))
+        .collect::<Result<Vec<_>, ParseIntError>>()?;
 
     // Part 1 - First Winner
     'out: for &num in nums.iter() {
