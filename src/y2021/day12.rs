@@ -3,7 +3,7 @@ use crate::prelude::*;
 use std::collections::HashMap;
 use std::ops::Index;
 
-const DAY: u8 = 12;
+day!(12);
 
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]

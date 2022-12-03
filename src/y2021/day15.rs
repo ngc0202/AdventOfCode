@@ -3,7 +3,7 @@ use crate::prelude::*;
 use crate::utils::Grid;
 use bitvec::prelude::*;
 
-const DAY: u8 = 15;
+day!(15);
 
 #[inline]
 fn set_if_lower<T: PartialOrd>(dest: &mut T, val: T) {

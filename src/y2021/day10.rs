@@ -5,7 +5,7 @@ use std::error::Error;
 use std::fmt;
 use itertools::process_results;
 
-const DAY: u8 = 10;
+day!(10);
 
 #[derive(Clone, Debug)]
 struct NotBracketError;

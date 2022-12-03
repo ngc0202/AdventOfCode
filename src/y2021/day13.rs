@@ -4,7 +4,7 @@ use bitvec::prelude::*;
 use std::ops::{Deref, DerefMut};
 use std::fmt;
 
-const DAY: u8 = 13;
+day!(13);
 
 
 #[derive(Clone, Debug)]

@@ -1,7 +1,9 @@
 
 use crate::prelude::*;
+use cached::proc_macro::cached;
 
-const DAY: u8 = 21;
+day!(21);
+
 static UNIS: &[(u16, u64)] = &[(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)];
 const PT_CAP: u16 = 21;
 
@@ -14,8 +16,10 @@ pub fn run() -> GenResult {
     let part1 = count_rolls(player1, player2);
     println!("Part 1: {}", part1);
 
+	let start = std::time::Instant::now();
     let part2 = count_universes(player1, player2);
-    println!("Part 2: {}", part2);
+	let dur = start.elapsed();
+    println!("Part 2: {} ({:?}) ({} iters)", part2, dur, COUNT.load(Ordering::Relaxed));
 
     Ok(())
 }
@@ -40,7 +44,12 @@ fn count_universes(ply1: Player, ply2: Player) -> u64 {
     a.max(b)
 }
 
+use std::sync::atomic::{AtomicU64, Ordering};
+static COUNT: AtomicU64 = AtomicU64::new(0);
+
+#[cached]
 fn inner_unis2(ply1: Player, ply2: Player, turn: bool) -> (u64, u64) {
+	COUNT.fetch_add(UNIS.len() as u64, Ordering::Relaxed);
     UNIS.iter()
         .map(move |&(n, c)| {
             if turn {
@@ -66,7 +75,7 @@ fn inner_unis2(ply1: Player, ply2: Player, turn: bool) -> (u64, u64) {
         .fold((0, 0), |acc, v| (acc.0 + v.0, acc.1 + v.1))
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 struct Player {
     pos: u8,
     score: u16

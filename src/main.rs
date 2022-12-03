@@ -1,50 +1,48 @@
+use crate::prelude::*;
+
 #[macro_use]
 mod macros;
 
-#[allow(dead_code)]
 mod utils;
 
-use crate::prelude::*;
-use paste::paste;
+#[allow(warnings)]
+mod y2021;
+mod y2022;
 
-// Main Method
-days!(4, 5, 6, 7, 8, 9, 10, 14*, 16, 21);
+use std::cell::Cell;
+thread_local!(
+    pub static SMALL: Cell<Option<bool>> = Cell::new(None);
+);
+
+fn main() -> GenResult {
+    y2022::main()
+}
+
+pub fn get_small() -> bool {
+    SMALL.with(|small| {
+        if let Some(small) = small.get() {
+            return small;
+        }
+
+        let val = match std::env::args().next() {
+            Some(arg) => arg.eq_ignore_ascii_case("small"),
+            None => false,
+        };
+
+        small.set(Some(val));
+        val
+    })
+}
 
 mod prelude {
-
-    pub type GenError = Box<dyn Error>;
-    pub type GenResult = Result<(), GenError>;
+    pub type GenError = Box<dyn std::error::Error>;
+    pub type GenResult<T = ()> = Result<T, GenError>;
 
     pub use std::io::{self, BufRead, Read};
     pub use std::iter;
     pub use std::str::FromStr;
 
     pub use itertools::Itertools;
-    use itertools::{process_results, ProcessResults};
 
-    use std::error::Error;
-    use std::fs::File;
-    use std::io::{BufReader, Lines};
-    use std::path::PathBuf;
-
-    pub fn load_input(day: u8) -> io::Result<BufReader<File>> {
-        let mut path = PathBuf::new();
-        path.push("inputs");
-        path.push(format!("input{:02}.txt", day));
-        println!("Reading from {}", path.display());
-        File::open(&path).map(BufReader::new)
-    }
-
-    pub fn load_input_string(day: u8) -> io::Result<String> {
-        let mut input = String::new();
-        load_input(day)?.read_to_string(&mut input)?;
-        Ok(input)
-    }
-
-    pub fn process_inputs<F, R>(day: u8, f: F) -> io::Result<R>
-    where
-        F: FnOnce(ProcessResults<Lines<BufReader<File>>, io::Error>) -> R,
-    {
-        process_results(load_input(day)?.lines(), f)
-    }
+    pub use crate::utils::{load_input, load_input_string, process_inputs, Day, NoInputError};
 }

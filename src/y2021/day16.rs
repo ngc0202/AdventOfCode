@@ -4,7 +4,7 @@ use std::ops::{Add, Mul};
 
 use nom::{self, error::Error, Finish, IResult};
 
-const DAY: u8 = 16;
+day!(16);
 
 pub fn run() -> GenResult {
     let input = crate::load_input_string(DAY)?

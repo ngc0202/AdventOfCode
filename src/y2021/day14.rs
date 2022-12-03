@@ -5,7 +5,7 @@ use std::iter::Sum;
 use std::sync::Arc;
 use cached::proc_macro::cached;
 
-const DAY: u8 = 14;
+day!(14);
 
 type Template = ([u8; 2], u8);
 
