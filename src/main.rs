@@ -1,3 +1,4 @@
+
 use crate::prelude::*;
 
 #[macro_use]
@@ -14,7 +15,8 @@ thread_local!(
     pub static SMALL: Cell<Option<bool>> = Cell::new(None);
 );
 
-fn main() -> GenResult {
+#[snafu::report]
+fn main() -> Result<(), Whatever> {
     y2022::main()
 }
 
@@ -24,7 +26,7 @@ pub fn get_small() -> bool {
             return small;
         }
 
-        let val = match std::env::args().next() {
+        let val = match std::env::args().nth(1) {
             Some(arg) => arg.eq_ignore_ascii_case("small"),
             None => false,
         };
@@ -45,4 +47,6 @@ mod prelude {
     pub use itertools::Itertools;
 
     pub use crate::utils::{load_input, load_input_string, process_inputs, Day, NoInputError};
+
+    pub use snafu::{prelude::*, Whatever};
 }

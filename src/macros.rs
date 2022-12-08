@@ -6,9 +6,9 @@ macro_rules! use_days {
 
 macro_rules! run_days {
 	($($n:tt $(* $(@$star:tt)?)?),+) => (
-		pub fn main() -> GenResult {
+		pub fn main() -> Result<(), Whatever> {
 			paste! {
-				$($(println!(concat!("\nRunning day ", $n, ":")); [<day $n>]::run()?; $($star)?)?)+
+				$($(println!(concat!("\nRunning day ", $n, ":")); whatever!([<day $n>]::run(), "Failed running Day {}", $n); $($star)?)?)+
 			}
 			Ok(())
 		}
