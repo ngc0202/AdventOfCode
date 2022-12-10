@@ -6,8 +6,9 @@ mod wrap;
 use itertools::{process_results, ProcessResults};
 pub use wrap::WrapUsize;
 
-// mod zorder;
-// pub use zorder::ZOrderIter;
+mod eof_iterator;
+pub use eof_iterator::{eof_iterator, EofParserIterator};
+
 
 use std::{
     fmt,
@@ -36,6 +37,12 @@ pub fn load_input(Day { day, year }: Day) -> io::Result<BufReader<File>> {
 pub fn load_input_string(day: Day) -> io::Result<String> {
     let mut input = String::new();
     load_input(day)?.read_to_string(&mut input)?;
+    Ok(input)
+}
+
+pub fn load_input_bytes(day: Day) -> io::Result<Vec<u8>> {
+    let mut input = Vec::new();
+    load_input(day)?.read_to_end(&mut input)?;
     Ok(input)
 }
 

@@ -46,7 +46,7 @@ mod prelude {
 
     pub use itertools::Itertools;
 
-    pub use crate::utils::{load_input, load_input_string, process_inputs, Day, NoInputError};
+    pub use crate::utils::{load_input, load_input_string, load_input_bytes, process_inputs, Day, NoInputError};
 
     pub use snafu::{prelude::*, Whatever};
 }
