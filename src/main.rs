@@ -1,3 +1,4 @@
+#![deny(rust_2018_idioms)]
 
 use crate::prelude::*;
 
@@ -8,7 +9,10 @@ mod utils;
 
 #[allow(warnings)]
 mod y2021;
+#[allow(warnings)]
 mod y2022;
+// #[allow(warnings)]
+mod y2023;
 
 use std::cell::Cell;
 thread_local!(
@@ -17,7 +21,7 @@ thread_local!(
 
 #[snafu::report]
 fn main() -> Result<(), Whatever> {
-    y2022::main()
+    y2023::main()
 }
 
 pub fn get_small() -> bool {
@@ -46,7 +50,11 @@ mod prelude {
 
     pub use itertools::Itertools;
 
-    pub use crate::utils::{load_input, load_input_string, load_input_bytes, process_inputs, Day, NoInputError};
+    pub use crate::utils::{
+        load_input, load_input_bytes, load_input_string, process_inputs, Day, NoInputError,
+    };
 
     pub use snafu::{prelude::*, Whatever};
+
+    pub use nom::Finish;
 }
