@@ -87,7 +87,7 @@ pub fn run() -> Result<(), Whatever> {
     // Re-sort
     hands.sort_by_key(|x| x.1);
     let part2: u64 = hands.iter().zip(1u64..).map(|((b, _), i)| i * b).sum();
-    println!("Part 2: {part2}"); // 250731217 - low
+    println!("Part 2: {part2}");
 
     Ok(())
 }
