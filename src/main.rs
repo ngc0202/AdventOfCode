@@ -5,14 +5,16 @@ use crate::prelude::*;
 #[macro_use]
 mod macros;
 
+#[allow(unused)]
 mod utils;
 
 #[allow(warnings)]
 mod y2021;
 #[allow(warnings)]
 mod y2022;
-// #[allow(warnings)]
+#[allow(warnings)]
 mod y2023;
+mod y2024;
 
 use std::cell::Cell;
 thread_local!(
@@ -21,7 +23,7 @@ thread_local!(
 
 #[snafu::report]
 fn main() -> Result<(), Whatever> {
-    y2023::main()
+    y2024::main()
 }
 
 pub fn get_small() -> bool {

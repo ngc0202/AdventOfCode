@@ -25,6 +25,14 @@ macro_rules! days {
 }
 
 macro_rules! day {
+	(run $day:tt) => {
+		day!($day);
+		pub fn run() -> Result<(), Whatever> {
+			paste::paste! {
+				super::solve::<[<Day $day>]>()
+			}
+		}
+	};
     ($day:expr) => {
         const DAY: crate::prelude::Day = crate::prelude::Day {
             day: $day,
