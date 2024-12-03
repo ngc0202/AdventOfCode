@@ -5,7 +5,6 @@ pub use grid::Grid;
 mod wrap;
 use itertools::{process_results, ProcessResults};
 use snafu::Snafu;
-pub use wrap::WrapUsize;
 
 mod eof_iterator;
 pub use eof_iterator::{eof_iterator, EofParserIterator};
@@ -100,52 +99,6 @@ impl<I: nom::AsBytes> From<nom::error::Error<I>> for NomFail {
         Self {
             code: inner.code,
             input: String::from_utf8_lossy(inner.input.as_bytes()).into_owned(),
-        }
-    }
-}
-
-pub mod parser {
-    use std::{ops::{Range, RangeFrom, RangeTo}, mem::MaybeUninit};
-
-    use nom::{
-        branch::alt,
-        character::complete::line_ending,
-        combinator::{eof, recognize},
-        error::ParseError,
-        sequence::terminated,
-        Compare, IResult, InputIter, InputLength, Offset, Parser, Slice,
-    };
-
-    pub fn line<I, O, E, F>(parser: F) -> impl FnMut(I) -> IResult<I, O, E>
-    where
-        I: Clone
-            + Offset
-            + InputLength
-            + InputIter
-            + Slice<RangeFrom<usize>>
-            + Slice<Range<usize>>
-            + Slice<RangeTo<usize>>
-            + Compare<&'static str>,
-        E: ParseError<I>,
-        F: Parser<I, O, E>,
-    {
-        terminated(parser, alt((eof, recognize(line_ending))))
-    }
-
-    pub fn many_array<const N: usize, I, O, E, F>(mut parser: F) -> impl FnMut(I) -> IResult<I, [O; N], E>
-    where
-        E: ParseError<I>,
-        F: Parser<I, O, E>,
-        O: Copy,
-    {
-        move |mut input: I| {
-            let mut arr = std::array::from_fn(|_| MaybeUninit::uninit());
-            for item in &mut arr {
-                let val;
-                (input, val) = parser.parse(input)?;
-                item.write(val);
-            }
-            Ok((input, arr.map(|u| unsafe { u.assume_init() } )))
         }
     }
 }
