@@ -11,6 +11,7 @@ type Grid = crate::utils::sgrid::Grid<Tile>;
 struct Day6 {
     grid: Grid,
     start: usize,
+    end: usize,
 }
 
 impl Solution for Day6 {
@@ -29,52 +30,65 @@ impl Solution for Day6 {
                 _ => return None,
             };
 
-            Some(Tile {
-                block,
-                visit: false,
-            })
+            Some(Tile { block, prev: None })
         })?;
 
         let [x, y] = start.context(NoStartSnafu)?;
         let start = y * grid.width() + x;
 
-        Ok(Self { grid, start })
+        Ok(Self {
+            grid,
+            start,
+            end: usize::MAX,
+        })
     }
 
-    fn part1(&mut self) -> u64 {
+    fn part1(&mut self) -> usize {
         let mut idx = self.start;
         let mut dir = Dir::Up;
-        let mut count = 0;
+        self.grid[self.start].prev = Some((usize::MAX, Dir::Up));
+        let mut count = 1;
 
         loop {
-            // Mark position as visited
-            let seen = set(&mut self.grid[idx].visit);
-            if !seen {
-                count += 1;
-            }
+            // Store prevs
+            let (pidx, pdir) = (idx, dir);
 
             // Step
             idx = match take_step(&self.grid, idx, &mut dir) {
                 Some(i) => i,
-                None => return count,
+                None => {
+                    self.end = idx;
+                    break;
+                }
             };
+
+            // Mark position as visited
+            let prev = &mut self.grid[idx].prev;
+            if prev.is_none() {
+                count += 1;
+                *prev = Some((pidx, pdir));
+            }
         }
+
+        count
     }
 
-    fn part2(&mut self) -> u64 {
+    fn part2(&mut self) -> usize {
         let mut count = 0;
         let mut seen = HashSet::new();
 
-        for block_idx in 0..self.grid.len() {
-            // Skip start and existing blocks
-            let tile = &mut self.grid[block_idx];
-            if block_idx == self.start || !tile.visit || set(&mut tile.block) {
+        for bidx in 0..self.grid.len() {
+            // Don't block start
+            if bidx == self.start {
                 continue;
             }
 
-            // Take steps checking for loops
-            let mut idx = self.start;
-            let mut dir = Dir::Up;
+            // Set block and get previous tile
+            let tile = &mut self.grid[bidx];
+            let Some((mut idx, mut dir)) = tile.prev else {
+                continue;
+            };
+            tile.block = true;
 
             loop {
                 // Mark visited
@@ -88,11 +102,11 @@ impl Solution for Day6 {
                 idx = match take_step(&self.grid, idx, &mut dir) {
                     Some(i) => i,
                     None => break,
-                }
+                };
             }
 
-            // Reset block and seen
-            self.grid[block_idx].block = false;
+            // Go to next tile
+            self.grid[bidx].block = false;
             seen.clear();
         }
 
@@ -114,11 +128,7 @@ fn take_step(grid: &Grid, idx: usize, dir: &mut Dir) -> Option<usize> {
         }
     }
 
-    panic!("Got stuck in one spot!")
-}
-
-const fn set(b: &mut bool) -> bool {
-    std::mem::replace(b, true)
+    panic!("Got stuck in one spot! (idx {idx})")
 }
 
 /// Turns right 90 degrees
@@ -144,5 +154,5 @@ enum Grid6Err {
 
 struct Tile {
     block: bool,
-    visit: bool,
+    prev: Option<(usize, Dir)>,
 }
