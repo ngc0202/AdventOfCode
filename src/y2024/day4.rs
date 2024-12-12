@@ -16,8 +16,8 @@ struct Day4 {
 impl Solution for Day4 {
     const DAY: Day = DAY;
 
-    fn parse(input: Vec<u8>) -> Result<Self, GridParseErr> {
-        let (_, grid) = Grid::parse(&input, |b| match b {
+    fn parse(input: &mut Vec<u8>) -> Result<Self, GridParseErr> {
+        let (_, grid) = Grid::parse(input, |b| match b {
             b'X' | b'M' | b'A' | b'S' => Some(b),
             _ => None,
         })?;

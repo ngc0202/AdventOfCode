@@ -14,8 +14,8 @@ struct Day2 {
 impl Solution for Day2 {
     const DAY: Day = DAY;
 
-    fn parse(input: Vec<u8>) -> Result<Self, NomFail> {
-        let levels = parse::parse(&input)?;
+    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+        let levels = parse::parse(input)?;
         Ok(Self { levels })
     }
 

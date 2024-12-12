@@ -12,8 +12,8 @@ struct Day1 {
 impl Solution for Day1 {
     const DAY: Day = DAY;
 
-    fn parse(input: Vec<u8>) -> Result<Self, NomFail> {
-        let [v1, v2] = parse::parse(&input)?;
+    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+        let [v1, v2] = parse::parse(input)?;
         Ok(Self { v1, v2 })
     }
 

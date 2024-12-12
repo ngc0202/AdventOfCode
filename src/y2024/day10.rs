@@ -21,7 +21,7 @@ struct Day10 {
 impl Solution for Day10 {
     const DAY: Day = DAY;
 
-    fn parse(input: Vec<u8>) -> Result<Self, GridParseErr> {
+    fn parse(input: &mut Vec<u8>) -> Result<Self, GridParseErr> {
         let (_, grid) = Grid::parse(&input, |b| b.is_ascii_digit().then_some(b - b'0'))?;
         Ok(Self { grid })
     }

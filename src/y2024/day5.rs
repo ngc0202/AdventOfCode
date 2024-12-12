@@ -23,8 +23,8 @@ struct Day5 {
 impl Solution for Day5 {
     const DAY: Day = DAY;
 
-    fn parse(input: Vec<u8>) -> Result<Self, NomFail> {
-        parse::parse(&input)
+    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+        parse::parse(input)
     }
 
     // 2: 9419 too high

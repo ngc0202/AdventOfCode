@@ -18,9 +18,9 @@ struct Block {
 impl Solution for Day9 {
     const DAY: Day = DAY;
 
-    fn parse(input: Vec<u8>) -> Result<Self, BadByte> {
+    fn parse(input: &mut Vec<u8>) -> Result<Self, BadByte> {
         input
-            .into_iter()
+            .drain(..)
             .enumerate()
             .filter(|(_, len)| *len != b'0')
             .scan(0, |n, (i, len)| {

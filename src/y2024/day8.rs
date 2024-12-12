@@ -19,14 +19,14 @@ struct Antenna {
 impl Solution for Day8 {
     const DAY: Day = DAY;
 
-    fn parse(input: Vec<u8>) -> Result<Self, GridParseErr> {
+    fn parse(input: &mut Vec<u8>) -> Result<Self, GridParseErr> {
         let mut antennae = Vec::new();
         let mut x = 0;
         let mut y = 0;
         let mut width = 0;
         let mut skip = false;
 
-        for b in input {
+        for b in input.drain(..) {
             match b {
                 b'\n' | b'\r' => {
                     if !skip {
