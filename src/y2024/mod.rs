@@ -8,18 +8,16 @@ use std::{
 
 use crate::utils::input_path;
 
-days!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11*);
+days!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12*);
 
 const YEAR: u16 = 2024;
 
 // -- Extras for 2024 --
 
 /// A trait for solvers for a day of AoC
-trait Solution: Sized {
-    const DAY: Day;
-
+pub trait Solution<'i>: Sized {
     /// Parse the input string
-    fn parse(input: &mut Vec<u8>) -> Result<Self, impl Error + 'static>;
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, impl Error + 'static>;
 
     /// Solve part 1
     fn part1(&mut self) -> impl Display {
@@ -32,8 +30,13 @@ trait Solution: Sized {
     }
 }
 
+pub trait InputSolution {
+    const DAY: Day;
+    type Sln<'i>: Solution<'i>;
+}
+
 /// Runs the given solver on its input
-fn solve<S: Solution>() -> Result<(), Whatever> {
+pub fn solve<S: InputSolution>() -> Result<(), Whatever> {
     // Load input
     let path = input_path(S::DAY);
     println!("Reading from {}", path.display());
@@ -41,7 +44,7 @@ fn solve<S: Solution>() -> Result<(), Whatever> {
     println!("Loaded input file in {dur:?}");
 
     // Parse input
-    let (dur, mut solver) = whatever!(try_timeit(|| S::parse(&mut input)), "Failed to parse input");
+    let (dur, mut solver) = whatever!(try_timeit(|| S::Sln::<'_>::parse(&mut input)), "Failed to parse input");
     println!("Parsed input in {dur:?}");
 
     // Part 1

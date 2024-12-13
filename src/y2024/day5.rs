@@ -1,9 +1,6 @@
 use std::{cmp::Ordering, collections::HashMap, ops::Range};
 
-use crate::{
-    prelude::*,
-    utils::{NomFail, Pair},
-};
+use crate::utils::{NomFail, Pair};
 
 use super::Solution;
 
@@ -20,10 +17,8 @@ struct Day5 {
     spans: Spans,
 }
 
-impl Solution for Day5 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+impl<'i> Solution<'i> for Day5 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, NomFail> {
         parse::parse(input)
     }
 

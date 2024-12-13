@@ -1,8 +1,7 @@
 use nom::Finish;
 
 use super::Solution;
-use crate::utils::{Day, NomFail};
-use snafu::Whatever;
+use crate::utils::NomFail;
 
 day!(run 11);
 
@@ -13,10 +12,8 @@ struct Day11 {
     memo: Memo,
 }
 
-impl Solution for Day11 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+impl<'i> Solution<'i> for Day11 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, NomFail> {
         Ok(Self {
             nums: parse::parse(input).finish()?.1,
             memo: Memo::default(),

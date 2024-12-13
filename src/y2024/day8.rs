@@ -1,5 +1,5 @@
 use super::Solution;
-use crate::{prelude::*, utils::sgrid::GridParseErr};
+use crate::utils::sgrid::GridParseErr;
 
 day!(run 8);
 
@@ -16,10 +16,8 @@ struct Antenna {
     x: usize,
 }
 
-impl Solution for Day8 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, GridParseErr> {
+impl<'i> Solution<'i> for Day8 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, GridParseErr> {
         let mut antennae = Vec::new();
         let mut x = 0;
         let mut y = 0;

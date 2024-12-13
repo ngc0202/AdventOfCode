@@ -25,11 +25,15 @@ macro_rules! days {
 }
 
 macro_rules! day {
-	(run $day:tt) => {
-		day!($day);
-		pub fn run() -> Result<(), Whatever> {
+	(run $day:tt $($bnd:tt)*) => {
+		pub fn run() -> Result<(), snafu::Whatever> {
 			paste::paste! {
-				super::solve::<[<Day $day>]>()
+				struct [<Day $day In>];
+				impl crate::y2024::InputSolution for [<Day $day In>] {
+					day!($day);
+					type Sln<'i> = [<Day $day>]$($bnd)*;
+				}
+				crate::y2024::solve::<[<Day $day In>]>()
 			}
 		}
 	};

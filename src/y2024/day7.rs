@@ -1,5 +1,5 @@
 use smallvec::SmallVec;
-use crate::{prelude::*, utils::NomFail};
+use crate::utils::NomFail;
 use super::Solution;
 
 day!(run 7);
@@ -13,10 +13,8 @@ struct Day7 {
     vec: Vec<Eqn>,
 }
 
-impl Solution for Day7 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+impl<'i> Solution<'i> for Day7 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, NomFail> {
         let vec = parse::parse(input)?;
         Ok(Self { vec })
     }

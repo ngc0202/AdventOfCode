@@ -1,12 +1,6 @@
 use std::mem;
 
-use crate::{
-    prelude::*,
-    utils::{
-        sgrid::{Dir, GridParseErr},
-        Pair,
-    },
-};
+use crate::utils::{sgrid::{Dir, GridParseErr}, Pair};
 
 use super::Solution;
 
@@ -18,11 +12,9 @@ struct Day10 {
     grid: Grid,
 }
 
-impl Solution for Day10 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, GridParseErr> {
-        let (_, grid) = Grid::parse(&input, |b| b.is_ascii_digit().then_some(b - b'0'))?;
+impl<'i> Solution<'i> for Day10 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, GridParseErr> {
+        let (_, grid) = Grid::parse(input, |b| b.is_ascii_digit().then_some(b - b'0'))?;
         Ok(Self { grid })
     }
 

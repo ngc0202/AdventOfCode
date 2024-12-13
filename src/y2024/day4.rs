@@ -13,10 +13,8 @@ struct Day4 {
     grid: Grid,
 }
 
-impl Solution for Day4 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, GridParseErr> {
+impl<'i> Solution<'i> for Day4 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, GridParseErr> {
         let (_, grid) = Grid::parse(input, |b| match b {
             b'X' | b'M' | b'A' | b'S' => Some(b),
             _ => None,

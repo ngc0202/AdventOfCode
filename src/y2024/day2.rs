@@ -1,7 +1,7 @@
 use arrayvec::ArrayVec;
 
 use super::Solution;
-use crate::{prelude::*, utils::NomFail};
+use crate::utils::NomFail;
 
 day!(run 2);
 
@@ -11,10 +11,8 @@ struct Day2 {
     levels: Vec<Row>,
 }
 
-impl Solution for Day2 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+impl<'i> Solution<'i> for Day2 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, NomFail> {
         let levels = parse::parse(input)?;
         Ok(Self { levels })
     }

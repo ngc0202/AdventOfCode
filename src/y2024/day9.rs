@@ -15,10 +15,8 @@ struct Block {
     idx: usize,
 }
 
-impl Solution for Day9 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, BadByte> {
+impl<'i> Solution<'i> for Day9 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, BadByte> {
         input
             .drain(..)
             .enumerate()

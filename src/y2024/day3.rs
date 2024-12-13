@@ -1,4 +1,4 @@
-use crate::{prelude::*, utils::NomFail};
+use crate::utils::NomFail;
 
 use super::Solution;
 
@@ -9,10 +9,8 @@ struct Day3 {
     p2: u64,
 }
 
-impl Solution for Day3 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, NomFail> {
+impl<'i> Solution<'i> for Day3 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, NomFail> {
         let (p1, p2) = parse::solve(input)?;
         Ok(Self { p1, p2 })
     }

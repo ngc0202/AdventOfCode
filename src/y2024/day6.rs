@@ -14,10 +14,8 @@ struct Day6 {
     end: usize,
 }
 
-impl Solution for Day6 {
-    const DAY: Day = DAY;
-
-    fn parse(input: &mut Vec<u8>) -> Result<Self, Grid6Err> {
+impl<'i> Solution<'i> for Day6 {
+    fn parse(input: &'i mut Vec<u8>) -> Result<Self, Grid6Err> {
         let mut start = None;
         let (_, grid) = Grid::parse_co(input, |b, x, y| {
             let block = match b {
