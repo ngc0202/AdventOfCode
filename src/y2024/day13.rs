@@ -15,7 +15,6 @@ struct Game {
 
 const ACOST: u64 = 3;
 const BCOST: u64 = 1;
-const MAX_PRESS: u64 = 100;
 const P2DIFF: u64 = 10_000_000_000_000;
 
 impl<'i> Solution<'i> for Day13 {
@@ -26,7 +25,7 @@ impl<'i> Solution<'i> for Day13 {
     }
 
     fn part1(&mut self) -> u64 {
-        self.games.iter().filter_map(|g| g.cost(true)).sum()
+        self.games.iter().filter_map(|g| g.cost()).sum()
     }
 
     fn part2(&mut self) -> u64 {
@@ -34,7 +33,7 @@ impl<'i> Solution<'i> for Day13 {
             .iter_mut()
             .filter_map(|g| {
                 g.prize = g.prize.map(|n| n + P2DIFF);
-                g.cost(false)
+                g.cost()
             })
             .sum()
     }
@@ -42,7 +41,7 @@ impl<'i> Solution<'i> for Day13 {
 
 impl Game {
     /// Returns the cost to win, if possible
-    pub fn cost(&self, limit: bool) -> Option<u64> {
+    pub fn cost(&self) -> Option<u64> {
         let bc = self.b[0] * self.a[1];
         let ad = self.a[0] * self.b[1];
         let bf = self.b[0] * self.prize[1];
@@ -55,11 +54,7 @@ impl Game {
         let x = divide(bf.abs_diff(de), bc.abs_diff(ad))?;
         let y = divide(self.prize[0].checked_sub(self.a[0] * x)?, self.b[0])?;
 
-        if limit && (x > MAX_PRESS || y > MAX_PRESS) {
-            None
-        } else {
-            Some(x * ACOST + y * BCOST)
-        }
+        Some(x * ACOST + y * BCOST)
     }
 }
 
