@@ -97,12 +97,9 @@ impl Day15 {
     }
 
     fn sort_stack(&self, dir: Dir, stack: &mut Stack) {
-        let w = self.grid2.width();
-        stack.sort_unstable_by(|&a, _, &b, _| match dir {
-            Dir::Right => (a % w).cmp(&(b % w)),
-            Dir::Left => (a % w).cmp(&(b % w)).reverse(),
-            Dir::Down => (a / w).cmp(&(b / w)),
-            Dir::Up => (a / w).cmp(&(b / w)).reverse(),
+        stack.sort_unstable_by(|a, _, b, _| match dir {
+            Dir::Right | Dir::Down => a.cmp(b),
+            Dir::Left | Dir::Up => b.cmp(a),
         });
     }
 
@@ -168,6 +165,7 @@ mod parse {
         Coord, NomFail,
     };
 
+    #[allow(clippy::type_complexity)]
     fn grid(input: &[u8]) -> Result<(&[u8], (Grid<Tile1>, usize)), Error15> {
         let mut robot = None;
         let (i, grid) = Grid::parse_co(input, |b, x, y| match b {
