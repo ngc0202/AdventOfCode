@@ -75,7 +75,7 @@ mod part2 {
         }]));
 
         // Collect constraints from program
-        let con_iter = prog.into_iter().enumerate().map(|(i, &o)| {
+        let con_iter = prog.iter().enumerate().map(|(i, &o)| {
             (0u64..8)
                 .flat_map(|mut bval| {
                     let ashift = (3 * i as u64) + (bval ^ 1);

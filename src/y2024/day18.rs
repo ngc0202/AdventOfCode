@@ -1,5 +1,5 @@
 use super::Solution;
-use crate::utils::{sgrid::{Dir, Grid}, Coord, NomFail};
+use crate::utils::{opt_min, sgrid::{Dir, Grid}, Coord, NomFail};
 
 day!(run 18);
 
@@ -35,7 +35,7 @@ impl<'i> Solution<'i> for Day18 {
             }
 
             // Update dist, stop if worse or at end
-            if !min(&mut dists[idx], dist) || idx == end {
+            if !opt_min(&mut dists[idx], dist) || idx == end {
                 continue
             }
 
@@ -74,16 +74,6 @@ impl<'i> Solution<'i> for Day18 {
     }
 }
 
-fn min(opt: &mut Option<usize>, n: usize) -> bool {
-    match opt {
-        Some(v) if *v <= n => false,
-        _ => {
-            *opt = Some(n);
-            true
-        },
-    }
-}
-
 impl Day18 {
     fn has_path(&self, stack: &mut Vec<usize>, seen: &mut [bool]) -> bool {
         let end = self.grid.len() - 1;
@@ -108,7 +98,7 @@ impl Day18 {
 
     fn corrupt(&mut self, n: usize) {
         self.coords[..n]
-            .into_iter()
+            .iter()
             .for_each(|&i| self.grid[i] = true);
     }
 
