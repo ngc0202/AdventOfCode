@@ -115,7 +115,7 @@ mod parse {
         let mut start = None;
         let grid = Grid::parse_co(input, |b, x, y| {
             Some(match b {
-                b'.' => false,
+                b'.' | b'E' => false,
                 b'#' => true,
                 b'S' => {
                     start = Some(Coord { x, y });
